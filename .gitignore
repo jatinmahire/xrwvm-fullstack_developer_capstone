@@ -136,3 +136,4 @@ server/static/
 server/frontend/static/app.js
 server/frontend/static/app.css
 server/frontend/static/app.js.map
+.capture/
