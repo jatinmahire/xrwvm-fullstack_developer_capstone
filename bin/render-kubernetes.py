@@ -2,7 +2,8 @@
 import json
 import sys
 
-prefix, tag = sys.argv[1:]
+prefix, tag = sys.argv[1:3]
+pull_secret = sys.argv[3] if len(sys.argv)>3 else 'carconnect-registry'
 items = []
 for name, port, image, extra, memory in [
     ('mongo', 27017, 'mongo:7', {}, '512Mi'),
@@ -17,7 +18,7 @@ for name, port, image, extra, memory in [
     labels={'app':f'carconnect-{name}','app.kubernetes.io/part-of':'carconnect'}
     container={'name':name,'image':image,'ports':[{'containerPort':port}],
         'resources':{'requests':{'cpu':'50m','memory':'64Mi'},'limits':{'cpu':'500m','memory':memory}}, **extra}
-    pod={'containers':[container], 'imagePullSecrets':[{'name':'carconnect-registry'}]}
+    pod={'containers':[container], 'imagePullSecrets':[{'name':pull_secret}]}
     if name in ('mongo','web'):
         directory='/data/db' if name=='mongo' else '/data'
         container['volumeMounts']=[{'name':'data','mountPath':directory}]

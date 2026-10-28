@@ -27,7 +27,9 @@ for service in web api sentiment; do
 done
 kubectl create secret generic carconnect-settings --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
 kubectl create secret generic carconnect-registry --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson="$HOME/.docker/config.json" --dry-run=client -o yaml | kubectl apply -f -
-python3 bin/render-kubernetes.py "$TASK_PREFIX" "$TASK_TAG" | kubectl apply -f -
+TASK_PULL_SECRET=carconnect-registry
+if kubectl get secret icr >/dev/null 2>&1; then TASK_PULL_SECRET=icr; fi
+python3 bin/render-kubernetes.py "$TASK_PREFIX" "$TASK_TAG" "$TASK_PULL_SECRET" | kubectl apply -f -
 for service in mongo api sentiment web; do
   kubectl rollout status "deployment/carconnect-$service" --timeout=240s
 done
