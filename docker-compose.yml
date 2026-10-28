@@ -1,0 +1,28 @@
+services:
+  mongo:
+    image: mongo:7
+    volumes: ["carconnect-mongo:/data/db"]
+  dealer-api:
+    build: ./server/database
+    environment:
+      MONGO_URL: mongodb://mongo:27017/carconnect
+    ports: ["3030:3030"]
+    depends_on: [mongo]
+    restart: on-failure
+  sentiment:
+    build: ./server/djangoapp/microservices
+    ports: ["5050:5050"]
+  web:
+    build: ./server
+    env_file: .env
+    environment:
+      BACKEND_URL: http://dealer-api:3030
+      SENTIMENT_URL: http://sentiment:5050
+      DJANGO_DB_PATH: /data/db.sqlite3
+      DJANGO_ALLOWED_HOSTS: '*'
+    volumes: ["carconnect-django:/data"]
+    ports: ["8000:8000"]
+    depends_on: [dealer-api, sentiment]
+volumes:
+  carconnect-mongo:
+  carconnect-django:

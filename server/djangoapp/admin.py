@@ -1,13 +1,14 @@
-# from django.contrib import admin
-# from .models import related models
-
-
-# Register your models here.
-
-# CarModelInline class
-
-# CarModelAdmin class
-
-# CarMakeAdmin class with CarModelInline
-
-# Register models here
+"""Catalogue configuration for the administrative interface."""
+from django.contrib import admin
+from .models import CarMake, CarModel
+@admin.register(CarMake)
+class CarMakeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name',)
+@admin.register(CarModel)
+class CarModelAdmin(admin.ModelAdmin):
+    list_display = ('name', 'car_make', 'type', 'year')
+    list_filter = ('car_make', 'type', 'year')
+    search_fields = ('name', 'car_make__name')
+admin.site.site_header = 'CarConnect Administration'
+admin.site.site_title = 'CarConnect Admin'

@@ -1,0 +1,46 @@
+name: CarConnect CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports: ["27017:27017"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Python dependencies
+        run: pip install -r server/requirements.txt -r server/djangoapp/microservices/requirements.txt
+      - name: Install and build React application
+        run: npm ci --prefix server/frontend && npm run build --prefix server/frontend
+      - name: Install and test Express service
+        run: npm ci --prefix server/database && npm test --prefix server/database
+      - name: Start backend services
+        run: |
+          node server/database/app.js > /tmp/dealer-api.log 2>&1 &
+          python server/djangoapp/microservices/app.py > /tmp/sentiment.log 2>&1 &
+          for port in 3030 5050; do
+            for attempt in $(seq 1 40); do
+              curl -fsS "http://localhost:$port/" && break
+              sleep 1
+            done
+            curl -fsS "http://localhost:$port/"
+          done
+      - name: Check Django configuration and migrations
+        working-directory: server
+        run: python manage.py check && python manage.py makemigrations --check --dry-run
+      - name: Run authentication, catalogue and service integration tests
+        working-directory: server
+        env:
+          RUN_INTEGRATION_TESTS: '1'
+        run: python manage.py test --verbosity 2
+      - name: Build deployable Django image
+        run: docker build -t carconnect-web:ci server
