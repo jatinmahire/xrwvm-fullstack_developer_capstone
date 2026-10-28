@@ -44,3 +44,14 @@ jobs:
         run: python manage.py test --verbosity 2
       - name: Build deployable Django image
         run: docker build -t carconnect-web:ci server
+      - name: Build backend deployment images
+        run: |
+          docker build -t carconnect-api:ci server/database
+          docker build -t carconnect-sentiment:ci server/djangoapp/microservices
+      - name: Export verified deployment images for restricted labs
+        run: docker save carconnect-web:ci carconnect-api:ci carconnect-sentiment:ci | gzip > carconnect-images.tar.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: carconnect-deployment-images
+          path: carconnect-images.tar.gz
+          retention-days: 2
