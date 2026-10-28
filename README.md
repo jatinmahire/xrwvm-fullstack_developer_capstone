@@ -51,6 +51,8 @@ This educational deployment uses SQLite for Django and a single MongoDB
 instance. It is not a production HA setup; use managed persistent databases,
 TLS, rate limiting, backups and secret management for a production service.
 Team profiles on About are fictional demonstration profiles.
+The Kubernetes lab manifests use ephemeral volumes; restarting or replacing
+their pods can reset lab data. Use persistent storage for a durable deployment.
 
 Starter: https://github.com/ibm-developer-skills-network/xrwvm-fullstack_developer_capstone
 License: Apache-2.0. AI assistance was used to prepare this implementation.

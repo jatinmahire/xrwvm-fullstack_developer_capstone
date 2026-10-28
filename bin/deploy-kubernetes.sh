@@ -26,6 +26,7 @@ for service in web api sentiment; do
   docker push "$TASK_PREFIX-$service:$TASK_TAG"
 done
 kubectl create secret generic carconnect-settings --from-env-file=.env --dry-run=client -o yaml | kubectl apply -f -
+kubectl create secret generic carconnect-registry --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson="$HOME/.docker/config.json" --dry-run=client -o yaml | kubectl apply -f -
 python3 bin/render-kubernetes.py "$TASK_PREFIX" "$TASK_TAG" | kubectl apply -f -
 for service in mongo api sentiment web; do
   kubectl rollout status "deployment/carconnect-$service" --timeout=240s

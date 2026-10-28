@@ -17,11 +17,13 @@ for name, port, image, extra, memory in [
     labels={'app':f'carconnect-{name}','app.kubernetes.io/part-of':'carconnect'}
     container={'name':name,'image':image,'ports':[{'containerPort':port}],
         'resources':{'requests':{'cpu':'50m','memory':'64Mi'},'limits':{'cpu':'500m','memory':memory}}, **extra}
-    pod={'containers':[container]}
+    pod={'containers':[container], 'imagePullSecrets':[{'name':'carconnect-registry'}]}
     if name in ('mongo','web'):
         directory='/data/db' if name=='mongo' else '/data'
         container['volumeMounts']=[{'name':'data','mountPath':directory}]
         pod['volumes']=[{'name':'data','emptyDir':{}}]
+    if name=='web':
+        pod['securityContext']={'fsGroup':1001}
     if name!='mongo':
         probe={'httpGet':{'path':'/health/' if name=='web' else '/','port':port},'initialDelaySeconds':15,'periodSeconds':10,'timeoutSeconds':5}
         container['readinessProbe']=probe

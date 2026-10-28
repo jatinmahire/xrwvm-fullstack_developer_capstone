@@ -30,7 +30,7 @@ def token_config():
         if line and not line.startswith('#') and '\tcsrftoken\t' in line]
     if not tokens:
         raise RuntimeError('The application did not issue a CSRF cookie.')
-    config.write_text('header = "Content-Type: application/json"\nheader = "X-CSRFToken: '+tokens[-1]+'"\n')
+    config.write_text('header = "Content-Type: application/json"\nheader = "Origin: '+args.web+'"\nheader = "X-CSRFToken: '+tokens[-1]+'"\n')
     config.chmod(0o600)
 
 def capture(name, arguments):
