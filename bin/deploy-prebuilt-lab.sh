@@ -20,6 +20,6 @@ python3 bin/render-kubernetes.py "$TASK_PREFIX" "$TASK_TAG" "$TASK_PULL_SECRET" 
 for service in mongo api sentiment web; do
   kubectl rollout status "deployment/carconnect-$service" --timeout=240s
 done
-nohup kubectl port-forward --address=0.0.0.0 service/carconnect-web 8002:8000 > evidence/kubernetes-forward.log 2>&1 < /dev/null &
+nohup kubectl port-forward --address=127.0.0.1 service/carconnect-web 8092:8000 > evidence/kubernetes-forward.log 2>&1 < /dev/null &
 kubectl get deployment,pods,service -l app.kubernetes.io/part-of=carconnect
-echo 'Kubernetes application preview is ready on port 8002.'
+echo 'Kubernetes application is available locally at http://127.0.0.1:8092/.'
