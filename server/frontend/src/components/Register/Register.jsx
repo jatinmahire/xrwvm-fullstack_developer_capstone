@@ -5,8 +5,9 @@ export default function Register({onLogin}) {
   const [form,setForm]=useState({userName:'',firstName:'',lastName:'',email:'',password:''});
   const [error,setError]=useState('');
   const navigate=useNavigate();
-  const fields=[['userName','Username','text'],['firstName','First Name','text'],
-    ['lastName','Last Name','text'],['email','Email','email'],['password','Password','password']];
+  function update(name) {
+    return event => setForm({...form, [name]: event.target.value});
+  }
   async function submit(event){
     event.preventDefault();setError('');
     try {const result=await api('register',form);onLogin(result.userName);navigate('/');}
@@ -14,9 +15,26 @@ export default function Register({onLogin}) {
   }
   return <section className="form-card"><p className="eyebrow">JOIN CARCONNECT</p><h1>Create your account</h1>
     <p>Share your experience and help other car buyers.</p><form onSubmit={submit}>
-    {fields.map(([name,label,type])=><label key={name}>{label}<input name={name} type={type}
-      required minLength={name==='password'?8:1} autoComplete={name==='password'?'new-password':undefined}
-      value={form[name]} onChange={event=>setForm({...form,[name]:event.target.value})}/></label>)}
+    <label>Username
+      <input name="userName" type="text" placeholder="Username" required
+        autoComplete="username" value={form.userName} onChange={update('userName')}/>
+    </label>
+    <label>First Name
+      <input name="firstName" type="text" placeholder="First Name" required
+        autoComplete="given-name" value={form.firstName} onChange={update('firstName')}/>
+    </label>
+    <label>Last Name
+      <input name="lastName" type="text" placeholder="Last Name" required
+        autoComplete="family-name" value={form.lastName} onChange={update('lastName')}/>
+    </label>
+    <label>Email
+      <input name="email" type="email" placeholder="email" required
+        autoComplete="email" value={form.email} onChange={update('email')}/>
+    </label>
+    <label>Password
+      <input name="password" type="password" placeholder="Password" required minLength={8}
+        autoComplete="new-password" value={form.password} onChange={update('password')}/>
+    </label>
     {error && <p role="alert" className="error">{error}</p>}<button type="submit">Register</button>
     </form></section>;
 }

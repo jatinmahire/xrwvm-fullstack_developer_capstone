@@ -1,0 +1,15 @@
+{
+  "name": "fullstack-developer-capstone-checks",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "jshint server/database/app.js server/database/dealership.js server/database/review.js server/database/inventory.js server/database/test/serialization.test.js && eslint server/frontend/src/App.js server/frontend/src/index.js server/frontend/src/api.js server/frontend/src/components/Register/Register.jsx"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.13.0",
+    "jshint": "^2.13.6"
+  }
+}

@@ -1,4 +1,10 @@
-# CarConnect: Dealership Reviews and Sentiment Analysis
+# fullstack_developer_capstone
+
+**Repository name:** xrwvm-fullstack_developer_capstone
+
+**Project name:** fullstack_developer_capstone
+
+**Application name:** CarConnect — Dealership Reviews and Sentiment Analysis
 
 A full-stack capstone application built from the IBM Developer Skills Network
 starter. React provides dealer search, registration and reviews; Django manages

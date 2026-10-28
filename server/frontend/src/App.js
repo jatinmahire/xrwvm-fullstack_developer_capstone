@@ -33,7 +33,7 @@ function Dealer({user}) {
 function PostReview({user}) {
  const {id}=useParams();const nav=useNavigate();const [dealer,setDealer]=useState(null),[cars,setCars]=useState([]),[error,setError]=useState('');
  const [form,setForm]=useState({dealership:Number(id),review:'',car_id:'',purchase:true,purchase_date:''});
- useEffect(()=>{api('dealer/'+id).then(r=>setDealer(r.dealer)).catch(e=>setError(e.message));api('get_cars').then(r=>setCars(r.cars)).catch(e=>setError(e.message));},[id]);
+ useEffect(()=>{api('dealer/'+id).then(r=>setDealer(r.dealer)).catch(e=>setError(e.message));api('get_car_options').then(r=>setCars(r.cars)).catch(e=>setError(e.message));},[id]);
  async function submit(e){e.preventDefault();try{await api('add_review',form);nav('/dealer/'+id);}catch(e){setError(e.message);}}
  if(!user)return <section className="panel"><h1>Log in to post a review</h1><Link to="/login">Log in</Link></section>;
  return <section className="form-card wide"><p className="eyebrow">SHARE YOUR EXPERIENCE</p><h1>Review {dealer?.full_name || 'dealership'}</h1><p>Posting as <strong>{user}</strong></p>

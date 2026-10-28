@@ -9,7 +9,7 @@ const Counter = mongoose.model('counter', new mongoose.Schema({_id:String, value
 const app = express();
 app.use(express.json({limit:'32kb'}));
 const asyncRoute = fn => (req,res,next) => Promise.resolve(fn(req,res,next)).catch(next);
-const clean = value => { const {_id,__v,...rest}=value; return rest; };
+const clean = value => { const rest={...value}; delete rest._id; delete rest.__v; return rest; };
 app.get('/', (req,res) => res.json({service:'CarConnect Express-Mongo API',status:'ok'}));
 app.get('/fetchDealers', asyncRoute(async(req,res) => res.json((await Dealers.find().sort({id:1}).lean()).map(clean))));
 app.get('/fetchDealers/:state', asyncRoute(async(req,res) => res.json((await Dealers.find({state:req.params.state}).sort({id:1}).lean()).map(clean))));
