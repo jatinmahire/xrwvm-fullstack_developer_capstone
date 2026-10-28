@@ -19,9 +19,9 @@ Path('.env').chmod(0o600)
 PY
 fi
 ibmcloud cr login
-docker build -t "$TASK_PREFIX-web:$TASK_TAG" server
-docker build -t "$TASK_PREFIX-api:$TASK_TAG" server/database
-docker build -t "$TASK_PREFIX-sentiment:$TASK_TAG" server/djangoapp/microservices
+docker build --network host -t "$TASK_PREFIX-web:$TASK_TAG" server
+docker build --network host -t "$TASK_PREFIX-api:$TASK_TAG" server/database
+docker build --network host -t "$TASK_PREFIX-sentiment:$TASK_TAG" server/djangoapp/microservices
 for service in web api sentiment; do
   docker push "$TASK_PREFIX-$service:$TASK_TAG"
 done

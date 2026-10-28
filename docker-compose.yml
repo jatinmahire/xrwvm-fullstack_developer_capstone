@@ -3,17 +3,23 @@ services:
     image: mongo:7
     volumes: ["carconnect-mongo:/data/db"]
   dealer-api:
-    build: ./server/database
+    build:
+      context: ./server/database
+      network: host
     environment:
       MONGO_URL: mongodb://mongo:27017/carconnect
     ports: ["3030:3030"]
     depends_on: [mongo]
     restart: on-failure
   sentiment:
-    build: ./server/djangoapp/microservices
+    build:
+      context: ./server/djangoapp/microservices
+      network: host
     ports: ["5050:5050"]
   web:
-    build: ./server
+    build:
+      context: ./server
+      network: host
     env_file: .env
     environment:
       BACKEND_URL: http://dealer-api:3030
